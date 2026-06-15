@@ -13,6 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#pragma once
+#ifndef __01_BUILDER_HPP__
+#define __01_BUILDER_HPP__
+
 #include <string>
 
 class Person
@@ -99,3 +103,5 @@ class PersonBuilder : public PersonBuilderBase
 	{
 	}
 };
+
+#endif // PERSON_BUILDER_HPP
