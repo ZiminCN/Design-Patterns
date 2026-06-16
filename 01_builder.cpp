@@ -44,4 +44,6 @@ int main(int argc, char **argv)
 	std::cout << "person street: [" << person.street << "]" << std::endl;
 	std::cout << "person city: [" << person.city << "]" << std::endl;
 	std::cout << "person country: [" << person.country << "]" << std::endl;
+
+	return 0;
 }

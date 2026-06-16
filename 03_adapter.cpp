@@ -13,13 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "02_abst_factory.hpp"
+#include "03_adapter.hpp"
 
 #include <iostream>
 
 int main(int argc, char **argv)
 {
-	std::cout << "### Abstraction Factory Pattern ###" << std::endl;
+	std::cout << "### Adapter Pattern ###" << std::endl;
+
+	FahrenheitDegree fahrenheit(100);
+	Fahrenheit2Celsius converter;
+
+	CelsiusDegree celsius(converter.Convert(fahrenheit.GetFahrenheit()));
+
+	std::cout << "CelsiusDegree: " << celsius.GetCelsius() << std::endl;
 
 	return 0;
 }
