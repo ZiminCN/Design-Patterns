@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "04_proxy.hpp"
+#include "04_Proxy.hpp"
 
 #include <iostream>
 

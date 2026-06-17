@@ -30,8 +30,12 @@ template <typename T> struct Observer {
 template <typename T> struct Observable {
 	void notify(T &source, const std::string &name)
 	{
-		std::scoped_lock<std::mutex> lock{mtx};
-		for (auto obs : observers) {
+		std::vector<Observer<T> *> observers_snapshot;
+		{
+			std::scoped_lock<std::mutex> lock{mtx};
+			observers_snapshot = observers;
+		}
+		for (auto obs : observers_snapshot) {
 			obs->field_changed(source, name);
 		}
 	}
