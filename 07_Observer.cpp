@@ -22,8 +22,8 @@ int main(int argc, char **argv)
 	std::cout << "### Observer Pattern ###" << std::endl;
 
 	Person p{20};
-	ConsolePersonObserver cpo;
-	p.subscribe(&cpo);
+	std::shared_ptr<ConsolePersonObserver> cpo_ptr = std::make_shared<ConsolePersonObserver>();
+	p.subscribe(cpo_ptr);
 	p.setAge(21);
 	p.setAge(22);
 

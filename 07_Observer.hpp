@@ -17,7 +17,6 @@
 #ifndef __07_OBSERVER_HPP__
 #define __07_OBSERVER_HPP__
 
-#include <algorithm>
 #include <iostream>
 #include <mutex>
 #include <string>
@@ -30,29 +29,41 @@ template <typename T> struct Observer {
 template <typename T> struct Observable {
 	void notify(T &source, const std::string &name)
 	{
-		std::vector<Observer<T> *> observers_snapshot;
+		std::vector<std::shared_ptr<Observer<T>>> observers_snapshot;
 		{
 			std::scoped_lock<std::mutex> lock{mtx};
-			observers_snapshot = observers;
+			for(auto it = weak_observers.begin(); it != weak_observers.end(); ++it){
+				if(auto s_ptr = it->lock()){
+					observers_snapshot.push_back(s_ptr);
+				}else{
+					weak_observers.erase(it);
+				}
+			}
+
 		}
+
 		for (auto obs : observers_snapshot) {
 			obs->field_changed(source, name);
 		}
 	}
-	void subscribe(Observer<T> *f)
+	void subscribe(std::shared_ptr<Observer<T>> ptr)
 	{
 		std::scoped_lock<std::mutex> lock{mtx};
-		observers.push_back(f);
+		weak_observers.push_back(ptr);
 	}
-	void unsubscribe(Observer<T> *f)
+	void unsubscribe(std::shared_ptr<Observer<T>> ptr)
 	{
 		std::scoped_lock<std::mutex> lock{mtx};
-		observers.erase(std::remove(observers.begin(), observers.end(), f),
-				observers.end());
+
+		std::erase_if(weak_observers, [&](const std::weak_ptr<Observer<T>>& w) {
+			auto sp = w.lock();
+			// sp is not nullptr and sp is the same as ptr
+			return (sp) && (sp == ptr);  // 比较指向的对象
+		});
 	}
 
       private:
-	std::vector<Observer<T> *> observers;
+	std::vector<std::weak_ptr<Observer<T>>> weak_observers;
 	std::mutex mtx;
 };
 
